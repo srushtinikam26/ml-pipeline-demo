@@ -32,8 +32,8 @@ jobs:
       run: az extension add -n ml -y
     
     - name: Submit Training Job
+      id: submit_job
       run: |
-      id : submit_job
         az ml job create --file jobs/train-job.yml \
           --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
           --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
@@ -41,7 +41,6 @@ jobs:
     - name: Register Model
       run: |
         az ml model create --name iris-classifier \
-          # Path ko aise update kijiye:
           --path azureml://jobs/${{ steps.submit_job.outputs.name }}/outputs/model \
           --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
           --workspace-name ${{ secrets.AZURE_ML_WORKSPACE }}
